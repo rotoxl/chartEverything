@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import {AppRegistry, StyleSheet, Text, View, Image, Button} from 'react-native'
+import {AppRegistry, StyleSheet, Text, View, Image, Button, FlatList, TouchableHighlight} from 'react-native'
 import { TabNavigator, StackNavigator } from 'react-navigation'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const colors={
     black:'black',
@@ -9,24 +10,75 @@ const colors={
     white:'white',
 }
 
+
+var store={
+    user:'rotoxl@gmail.com',
+    data:[{
+        key:'x0xaw10',
+        title:'Programming languages (TIOBE index)',
+        author:'rotoxl@gmail.com',
+        timestamp:'2017/07/04 20:54:00',
+        type:'bar',
+        icon:'ios-stats',//Ionicons
+        series:[{
+            label:'Java', value:14.49,
+            label:'C',    value:6.84,
+            label:'C++', value:5.72,
+            label:'Python', value:4.33,
+            label:'C#', value:3.53,
+            label:'Visual Basic .NET', value:3.11,
+            label:'Javascript', value:3.02,
+            label:'PHP', value:2.77,
+            label:'Perl', value:2.30,
+            label:'Assymbly language', value:2.25,
+            label:'Ruby', value:2.22,
+        }],
+    },{
+        key:'ca122010',
+        title:'Databases',
+        author:'ermolina@e-externas.aena.es',
+        timestamp:'2017/07/08 20:00:00',
+        type:'pie',
+        icon:'ios-pie',//Ionicons
+        series:[]
+        }
+    ]
+}
+
 class MyCharts extends React.Component {
+    renderSeparator = () => {
+        return (
+            <View style={{height: 1, width: "88%", backgroundColor: "#CED0CE", marginLeft: "11%"}} />
+            )
+        }
+    renderRow(item){
+        return (
+                <TouchableHighlight activeOpacity={.9} underlayColor="#e9e9ef" onPress={() => {this.chart_onClick(item)}}>
+                <View style={styles.lvrow} key={item.key}>
+                    <View style={styles.lvicon}>
+                        <Icon name={item.icon} size={26} color={colors.darkgray} style={{alignSelf:'center', }}/>
+                    </View>
+                    <View style={styles.lvtextcontainer}>
+                        <Text style={styles.lvtitle}>{item.title}</Text>
+                        <Text style={styles.lvsubtitle}>Created by {item.author}</Text>
+                    </View>
+                    <View style={styles.lvbadge}>
+                        <Icon name='ios-alert-outline' size={18} color={colors.darkgray} style={{alignSelf:'center', }}/>
+                    </View>
+                </View>
+                </TouchableHighlight>
+            )
+        }
     render() {
         return (
             <View>
-                <Text style={styles.tabContent}> My Charts </Text>
-                <Button
-                    onPress={() => this.chart_onClick()}
-                    title="Chart details"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    />
+            <FlatList data={store.data} renderItem={({item}) => this.renderRow(item)} ItemSeparatorComponent={this.renderSeparator}/>
             </View>
             )
         }
-    chart_onClick = () => {
-        this.props.navigation.navigate('chartDetails')
+    chart_onClick = (item) => {
+        this.props.navigation.navigate('chartDetails', item.title)
         }
-
     }
 class StarredCharts extends React.Component {
     render() {
@@ -53,21 +105,21 @@ const Tabs=TabNavigator({
          screen: MyCharts,
          navigationOptions: {
              tabBarLabel: 'My Charts',
-             tabBarIcon: ({ tintColor }) => (<Image source={require('./res/user.png')} style={[styles.icon, {tintColor: tintColor}]} />)
+             tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-contact":"ios-contact-outline"} size={26} color={tintColor}/>)
              }
          },
      myCharts: {
          screen: StarredCharts,
          navigationOptions: {
              tabBarLabel: 'Starred',
-             tabBarIcon: ({ tintColor }) => (<Image source={require('./res/star.png')} style={[styles.icon, {tintColor: tintColor}]} />)
+             tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-star":"ios-star-outline"} size={26} color={tintColor}/>)
              }
          },
      popularCharts: {
          screen: StarredCharts,
          navigationOptions: {
              tabBarLabel: 'Popular',
-             tabBarIcon: ({ tintColor }) => (<Image source={require('./res/popular.png')} style={[styles.icon, {tintColor: tintColor}]} />)
+             tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-chatbubbles":"ios-chatbubbles-outline"} size={26} color={tintColor}/>)
              }
          },
      }, {
@@ -79,13 +131,13 @@ const Tabs=TabNavigator({
          swipeEnabled:true,
          },
      })
-
 const stack=StackNavigator({
     tabs:{
         screen:Tabs,
         navigationOptions: ({navigation}) => ({
             title: 'Chart everything',
-            tabBarIcon: ({ tintColor }) => <Image source={require('./res/star.png')} style={[styles.icon, {tintColor: tintColor}]} />,
+            tabBarIcon: ({ tintColor }) => <Icon name="star" size={26} color={tintColor}/>,
+
             headerRight:(<Button title='Add' color={colors.darkgray} onPress={function(){
                  navigation.navigate('newChart')
                 }} />),
@@ -117,7 +169,13 @@ const styles = StyleSheet.create({
         marginTop:32,
         marginLeft:3,
         },
-    tabBar:{}
+    lvrow:{left:0, right:0, flexDirection: 'row'},
+        lvicon:{width:40, height:60, paddingTop:15,},
+        lvtextcontainer:{flex:1, flexDirection: 'column'},
+            lvtitle:{flex:1, color:colors.blackgray, fontSize:14, marginTop:10,},
+            lvsubtitle:{flex:1, color:colors.lightgray, fontSize:12, },
+        lvbadge:{width:40, height:60, paddingTop:15,},
+
     })
 
 
