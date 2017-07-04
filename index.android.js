@@ -9,7 +9,7 @@ class MyCharts extends React.Component {
                 <Text style={styles.tabContent}> My Charts </Text>
                 <Button
                     onPress={() => this.chart_onClick()}
-                    title="Learn More"
+                    title="Chart details"
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
                     />
@@ -17,7 +17,7 @@ class MyCharts extends React.Component {
             )
         }
     chart_onClick = () => {
-        this.props.navigation.navigate('newChart')
+        this.props.navigation.navigate('chartDetails')
         }
 
     }
@@ -44,14 +44,14 @@ class ChartDetails extends React.Component{
 const Tabs=TabNavigator({
 
      starredCharts: {
-         screen: StarredCharts,
+         screen: MyCharts,
          navigationOptions: {
              tabBarLabel: 'My Charts',
              tabBarIcon: ({ tintColor }) => (<Image source={require('./res/user.png')} style={[styles.icon, {tintColor: tintColor}]} />)
              }
          },
      myCharts: {
-         screen: MyCharts,
+         screen: StarredCharts,
          navigationOptions: {
              tabBarLabel: 'Starred',
              tabBarIcon: ({ tintColor }) => (<Image source={require('./res/star.png')} style={[styles.icon, {tintColor: tintColor}]} />)
@@ -92,25 +92,13 @@ const stack=StackNavigator({
             }),
         },
     chartDetails:{
-        screen:NewChart,
+        screen:ChartDetails,
         navigationOptions: ({ navigation }) => ({
             title:'Chart details',
             }),
         },
     },
 )
-//      navigationOptions: {
-//         title: 'Chart everything',
-//         headerRight:(<Button title="Add" color='#4A4A4A' onPress={function(){
-//             this.props.navigation.navigate('NewChart')
-//             }}/>)
-//         }
-//     },
-//     NewChart:{
-//         screen:NewChart,
-//     }
-// })
-
 
 const styles = StyleSheet.create({
     icon: {

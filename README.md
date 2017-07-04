@@ -1,5 +1,5 @@
 # chartEverything
-React Native project for an awesome new app, never ever released before
+React Native project for an awesome new app, never ever released before.
 
 Should be something like:
 
@@ -8,3 +8,4 @@ Should be something like:
 
 # TODO
 * Design 'New Chart' screen
+* Icons stuff
