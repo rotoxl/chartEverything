@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import {AppRegistry, StyleSheet, Text, View, Image, Button} from 'react-native'
 import { TabNavigator, StackNavigator } from 'react-navigation'
 
+const colors={
+    black:'black',
+    darkgray:'#4A4A4A',
+    lightgray:'#9B9B9B',
+    white:'white',
+}
+
 class MyCharts extends React.Component {
     render() {
         return (
@@ -42,7 +49,6 @@ class ChartDetails extends React.Component{
     }
 
 const Tabs=TabNavigator({
-
      starredCharts: {
          screen: MyCharts,
          navigationOptions: {
@@ -66,10 +72,10 @@ const Tabs=TabNavigator({
          },
      }, {
      tabBarOptions: {
-         activeTintColor: '#4A4A4A',
-         inactiveTintColor:'silver',
-         activeBackgroundColor:'white',
-         inactiveBackgroundColor:'white',
+         activeTintColor: colors.darkgray,
+         inactiveTintColor:colors.lightgray,
+         activeBackgroundColor:colors.white,
+         inactiveBackgroundColor:colors.white,
          swipeEnabled:true,
          },
      })
@@ -80,7 +86,7 @@ const stack=StackNavigator({
         navigationOptions: ({navigation}) => ({
             title: 'Chart everything',
             tabBarIcon: ({ tintColor }) => <Image source={require('./res/star.png')} style={[styles.icon, {tintColor: tintColor}]} />,
-            headerRight:(<Button title="Add" color='#4A4A4A' onPress={function(){
+            headerRight:(<Button title='Add' color={colors.darkgray} onPress={function(){
                  navigation.navigate('newChart')
                 }} />),
             }),
@@ -88,13 +94,15 @@ const stack=StackNavigator({
     newChart:{
         screen:NewChart,
         navigationOptions: ({ navigation }) => ({
-            title:'New chart'
+            title:'New chart',
+            headerTintColor:colors.darkgray,
             }),
         },
     chartDetails:{
         screen:ChartDetails,
         navigationOptions: ({ navigation }) => ({
             title:'Chart details',
+            headerTintColor:colors.darkgray,
             }),
         },
     },
@@ -111,5 +119,6 @@ const styles = StyleSheet.create({
         },
     tabBar:{}
     })
+
 
 AppRegistry.registerComponent('chartEverything', () => stack)
