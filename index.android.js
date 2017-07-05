@@ -4,7 +4,7 @@ import { TabNavigator, StackNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 import { Bar, Pie } from 'react-native-pathjs-charts'
-
+import { FormattedWrapper, FormattedNumber, FormattedDate, FormattedRelativeTime, FormattedMessage } from 'react-native-globalize'
 
 const colors={
     black:'black',
@@ -17,6 +17,7 @@ var {height, width} = Dimensions.get('window')
 
 var store={
     user:'rotoxl@gmail.com',
+    i18n:{locale:'es', currency:'EUR'},
     data:[{
         key:'x0xaw10',
         title:'Programming languages (TIOBE index)',
@@ -41,7 +42,7 @@ var store={
         key:'ca122010',
         title:'Databases',
         author:'ermolina@e-externas.aena.es',
-        timestamp:'2017/07/08 20:00:00',
+        timestamp:'2017/07/05 22:28:00',
         type:'pie',
         icon:'ios-pie',//Ionicons
         series:[
@@ -61,6 +62,37 @@ var store={
     ]
 }
 
+
+const messages = {
+    en: {
+        byAuthor: 'By {author}, {time}',
+
+        myCharts: 'My Charts',
+        starred: 'Starred',
+        popular: 'Popular',
+        add: 'Add',
+        info:'Info',
+
+        newChart:'New chart',
+        c:'Chart info',
+    },
+    es: {
+        byAuthor: 'Por {author}, {time}',
+
+        myCharts: 'Mis gráficas',
+        starred: 'Favoritos',
+        popular: 'Populares',
+        add: 'Añadir',
+        info:'Info',
+
+        newChart:'Nueva gráfica',
+        chartInfo:'Información sobre la gráfica',
+    },
+}
+function getTranslation(k){
+    return messages[store.i18n.locale][k] || k
+}
+
 class MyCharts extends React.Component {
     renderSeparator = () => {
         return (
@@ -69,27 +101,31 @@ class MyCharts extends React.Component {
         }
     renderRow(item){
         return (
-                <TouchableHighlight activeOpacity={.9} underlayColor="#e9e9ef" onPress={() => {this.chart_onClick(item)}}>
+            <TouchableHighlight activeOpacity={.9} underlayColor="#e9e9ef" onPress={() => {this.chart_onClick(item)}}>
                 <View style={styles.lvrow} key={item.key}>
                     <View style={styles.lvicon}>
                         <Icon name={item.icon} size={26} color={colors.darkgray} style={{alignSelf:'center', }}/>
                     </View>
                     <View style={styles.lvtextcontainer}>
                         <Text style={styles.lvtitle}>{item.title}</Text>
-                        <Text style={styles.lvsubtitle}>Created by {item.author}</Text>
+                        <Text style={styles.lvsubtitle}>
+                            <FormattedMessage message='byAuthor' author={item.author} time={<FormattedRelativeTime unit='best' value={new Date(item.timestamp)}/>}/>
+                        </Text>
                     </View>
                     <View style={styles.lvbadge}>
                         <Icon name='ios-alert-outline' size={18} color={colors.darkgray} style={{alignSelf:'center', }}/>
                     </View>
                 </View>
-                </TouchableHighlight>
+            </TouchableHighlight>
             )
         }
     render() {
         return (
-            <View style={{backgroundColor:colors.white, flex:1,}}>
-                <FlatList data={store.data} renderItem={({item}) => this.renderRow(item)} ItemSeparatorComponent={this.renderSeparator}/>
-            </View>
+            <FormattedWrapper locale={store.i18n.locale} currency={store.i18n.currency} messages={messages}>
+                <View style={{backgroundColor:colors.white, flex:1,}}>
+                    <FlatList data={store.data} renderItem={({item}) => this.renderRow(item)} ItemSeparatorComponent={this.renderSeparator}/>
+                </View>
+            </FormattedWrapper>
             )
         }
     chart_onClick = (item) => {
@@ -114,8 +150,8 @@ class ChartDetails extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            label:'',
-            value:''
+            label:null,
+            value:null
             }
         }
     getChart(chart){
@@ -142,7 +178,7 @@ class ChartDetails extends React.Component{
     getChart_pie(chart){
         let data=chart.series
         let options = Object.assign({
-                r: 50, R: 150,
+                r: 50, R: (width-40)/2,
                 label:this.getChart_labelOptions(),
                 legendPosition: 'topLeft'
                 },
@@ -173,41 +209,49 @@ class ChartDetails extends React.Component{
         return (<Bar data={data} options={options} accessorKey='value' onPress={(item) => {this.setActiveSerie(item)}}/>)
         }
     render() {
-        // return (<Text style={styles.tabContent}> ChartDetails {this.props.navigation.state.params.title} </Text>)
         var data=this.props.navigation.state.params
         var chart=this.getChart(data)
         return (
+            <FormattedWrapper locale={store.i18n.locale} currency={store.i18n.currency} messages={messages}>
             <View style={{flex:1, top:0, bottom:0, left:0, right:0,}}>
 
                 {chart}
 
                 <View style={styles.legendcontainer}>
                     <Text style={styles.legend_label}> {this.state.label} </Text>
-                    <Text style={styles.legend_value}> {this.state.value} </Text>
+                    {this.state.value!=null?<FormattedNumber useGrouping={true} style={styles.legend_value} value={this.state.value}/>:<Text/>}
+
                 </View>
-            </View>)
+            </View>
+            </FormattedWrapper>
+            )
+        }
+    }
+class ChartInfo extends React.Component{
+    render() {
+        return (<Text style={styles.tabContent}> ChartInfo </Text>)
         }
     }
 
-const Tabs=TabNavigator({
-     starredCharts: {
+const tabs=TabNavigator({
+     myCharts: {
          screen: MyCharts,
          navigationOptions: {
-             tabBarLabel: 'My Charts',
+             tabBarLabel: getTranslation('myCharts'),
              tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-contact":"ios-contact-outline"} size={26} color={tintColor}/>)
              }
          },
-     myCharts: {
+     starredCharts: {
          screen: StarredCharts,
          navigationOptions: {
-             tabBarLabel: 'Starred',
+             tabBarLabel: getTranslation('starred'),
              tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-star":"ios-star-outline"} size={26} color={tintColor}/>)
              }
          },
      popularCharts: {
          screen: StarredCharts,
          navigationOptions: {
-             tabBarLabel: 'Popular',
+             tabBarLabel: getTranslation('popular'),
              tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-chatbubbles":"ios-chatbubbles-outline"} size={26} color={tintColor}/>)
              }
          },
@@ -222,12 +266,12 @@ const Tabs=TabNavigator({
 const stack=StackNavigator(
     {
     tabs:{
-        screen:Tabs,
+        screen:tabs,
         navigationOptions: ({navigation}) => ({
             title: 'Chart everything',
             tabBarIcon: <Icon name='ios-star' size={26} color={colors.darkgray}/>,
             headerRight:Platform.OS=='ios'?
-                        (<Button title='Add' color={colors.darkgray} onPress={function(){navigation.navigate('newChart')}} />):
+                        (<Button title={getTranslation('add')} color={colors.darkgray} onPress={function(){navigation.navigate('newChart')}} />):
                         (<TouchableHighlight style={{width:30, height:35, paddingTop:7,}} onPress={function(){navigation.navigate('newChart')}} >
                             <Icon name='ios-add-circle-outline' size={26} color={colors.darkgray}/>
                         </TouchableHighlight>
@@ -237,7 +281,7 @@ const stack=StackNavigator(
     newChart:{
         screen:NewChart,
         navigationOptions: ({ navigation }) => ({
-            title:'New chart',
+            title:getTranslation('newChart'),
             headerTintColor:colors.darkgray,
             }),
         },
@@ -248,9 +292,22 @@ const stack=StackNavigator(
             return {
                 title:params.title,
                 headerTintColor:colors.darkgray,
+                headerRight:Platform.OS=='ios'?
+                            (<Button title={getTranslation('info')} color={colors.darkgray} onPress={function(){navigation.navigate('chartInfo')}} />):
+                            (<TouchableHighlight style={{width:30, height:35, paddingTop:7,}} onPress={function(){navigation.navigate('chartInfo')}} >
+                                <Icon name='ios-information-circle-outline' size={26} color={colors.darkgray}/>
+                            </TouchableHighlight>
+                            )
                 }
-            }
+            },
         },
+    chartInfo:{
+        screen:ChartInfo,
+        navigationOptions: ({ navigation }) => ({
+            title:getTranslation('chartInfo'),
+            headerTintColor:colors.darkgray,
+            }),
+        }
     },{
         header:{
             style:{
@@ -261,18 +318,6 @@ const stack=StackNavigator(
         },
     }
 )
-// StackNavigator.navigationOptions = {
-//     header: {
-//         style: {
-//             elevation: 0,
-//             backgroundColor: 'red',
-//         }
-//     },
-//     headerStyle:{
-//         elevation: 0,
-//         backgroundColor: 'red',
-//     }
-// }
 
 
 const styles = StyleSheet.create({
