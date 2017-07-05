@@ -17,5 +17,7 @@ npm install --save react-navigation
 * Design 'New Chart' screen
 * Define chart metadata & chart types
 * Define inapp purchases
-* Icons stuff
+* ~~Icons stuff~~
 * Find best way to create charts... RN charting libraries seem to only scratch the surface
+  * ~~https://github.com/AdonRain/react-native-ichart~~ - OUTDATED
+  * https://github.com/capitalone/react-native-pathjs-charts - GIVING A TRY 
