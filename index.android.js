@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import {AppRegistry, StyleSheet, Text, View, Image, Button, FlatList, TouchableHighlight} from 'react-native'
+import {AppRegistry, StyleSheet, Text, View, Image, Button, FlatList, TouchableHighlight, Dimensions, Platform} from 'react-native'
 import { TabNavigator, StackNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
+
+import { Bar, Pie } from 'react-native-pathjs-charts'
+
 
 const colors={
     black:'black',
@@ -10,6 +13,7 @@ const colors={
     white:'white',
 }
 
+var {height, width} = Dimensions.get('window')
 
 var store={
     user:'rotoxl@gmail.com',
@@ -20,19 +24,19 @@ var store={
         timestamp:'2017/07/04 20:54:00',
         type:'bar',
         icon:'ios-stats',//Ionicons
-        series:[{
-            label:'Java', value:14.49,
-            label:'C',    value:6.84,
-            label:'C++', value:5.72,
-            label:'Python', value:4.33,
-            label:'C#', value:3.53,
-            label:'Visual Basic .NET', value:3.11,
-            label:'Javascript', value:3.02,
-            label:'PHP', value:2.77,
-            label:'Perl', value:2.30,
-            label:'Assymbly language', value:2.25,
-            label:'Ruby', value:2.22,
-        }],
+        series:[
+            {label:'Java',               value:14.49},
+            {label:'C',                  value:6.84},
+            {label:'C++',                value:5.72},
+            {label:'Python',             value:4.33},
+            {label:'C#',                 value:3.53},
+            {label:'Visual Basic .NET',  value:3.11},
+            {label:'Javascript',         value:3.02},
+            {label:'PHP',                value:2.77},
+            {label:'Perl',               value:2.30},
+            {label:'Assymbly language',  value:2.25},
+            {label:'Ruby',               value:2.22},
+            ],
     },{
         key:'ca122010',
         title:'Databases',
@@ -40,7 +44,19 @@ var store={
         timestamp:'2017/07/08 20:00:00',
         type:'pie',
         icon:'ios-pie',//Ionicons
-        series:[]
+        series:[
+            {label:'Oracle',                value:1374.88},
+            {label:'MySQL',                 value:1349.11},
+            {label:'Microsoft SQL Server',  value:1226.00},
+            {label:'PostgreSQL',            value:369.44},
+            {label:'MongoDB',               value:332.77},
+            {label:'DB2',                   value:191.25},
+            {label:'Microsoft Access',      value:126.13},
+            {label:'Cassandra',             value:124.12},
+            {label:'Redis',                 value:121.51},
+            {label:'Elasticsearch',         value:115.98},
+            {label:'SQLite',                value:113.86},
+            ]
         }
     ]
 }
@@ -71,13 +87,13 @@ class MyCharts extends React.Component {
         }
     render() {
         return (
-            <View>
-            <FlatList data={store.data} renderItem={({item}) => this.renderRow(item)} ItemSeparatorComponent={this.renderSeparator}/>
+            <View style={{backgroundColor:colors.white, flex:1,}}>
+                <FlatList data={store.data} renderItem={({item}) => this.renderRow(item)} ItemSeparatorComponent={this.renderSeparator}/>
             </View>
             )
         }
     chart_onClick = (item) => {
-        this.props.navigation.navigate('chartDetails', item.title)
+        this.props.navigation.navigate('chartDetails', { ...item })
         }
     }
 class StarredCharts extends React.Component {
@@ -95,8 +111,71 @@ class NewChart extends React.Component{
         }
     }
 class ChartDetails extends React.Component{
+    getChart(chart){
+        if (chart.type=='bar')
+            return this.getChart_bar(chart)
+        else if (chart.type=='pie')
+            return this.getChart_pie(chart)
+        else
+            return this.getChart_bar(chart)
+        }
+    getChart_options(){
+        return {
+            width: width-40,
+            height: height-180,
+            margin: {top: 20, left: 20, bottom: 20, right: 20},
+            color: '#4A4A4A',
+            animate: {type: 'oneByOne', duration: 500, fillTransition: 3},
+            legendPosition: 'topLeft',
+        }
+    }
+    getChart_labelOptions(){
+        return { fontFamily:'Arial', fontSize:18, fontWeight:true, fill:'#34495E'}
+    }
+    getChart_pie(chart){
+        let data=chart.series
+        let options = Object.assign({
+                r: 50, R: 150,
+                label:this.getChart_labelOptions(),
+                legendPosition: 'topLeft'
+                },
+                this.getChart_options()
+            )
+        return (
+            <View style={{marginLeft:20,}}>
+                <Pie data={data} options={options} accessorKey="value" onPress={function(item){console.log(item)}}  />
+            </View>)
+        }
+    getChart_bar(chart){
+        let data=[chart.series]
+        let options = Object.assign({
+              gutter: 10,
+              axisX: {
+                showAxis:false, showLines:false, showLabels:false, showTicks:true, zeroAxis:false, orient:'bottom',
+                label: this.getChart_labelOptions()
+                },
+              axisY: {
+                showAxis:false, showLines:false, showLabels:false, showTicks:false, zeroAxis:false, orient: 'left',
+                label: this.getChart_labelOptions()
+                }
+            }, this.getChart_options()
+            )
+        return (<Bar data={data} options={options} accessorKey='value' onPress={function(item){console.log(item)}}/>)
+        }
     render() {
-        return (<Text style={styles.tabContent}> ChartDetails </Text>)
+        // return (<Text style={styles.tabContent}> ChartDetails {this.props.navigation.state.params.title} </Text>)
+        var data=this.props.navigation.state.params
+        var chart=this.getChart(data)
+        return (
+            <View style={{flex:1, top:0, bottom:0, left:0, right:0,}}>
+
+                {chart}
+
+                <View style={styles.legendcontainer}>
+                    <Text style={styles.legend_label}>Etiqueta</Text>
+                    <Text style={styles.legend_value}>Valor</Text>
+                </View>
+            </View>)
         }
     }
 
@@ -124,23 +203,25 @@ const Tabs=TabNavigator({
          },
      }, {
      tabBarOptions: {
-         activeTintColor: colors.darkgray,
-         inactiveTintColor:colors.lightgray,
-         activeBackgroundColor:colors.white,
-         inactiveBackgroundColor:colors.white,
+         activeTintColor: colors.darkgray, inactiveTintColor:colors.lightgray,
+         style:{backgroundColor:'white', },
+         indicatorStyle:{backgroundColor:colors.darkgray},
          swipeEnabled:true,
          },
      })
-const stack=StackNavigator({
+const stack=StackNavigator(
+    {
     tabs:{
         screen:Tabs,
         navigationOptions: ({navigation}) => ({
             title: 'Chart everything',
-            tabBarIcon: ({ tintColor }) => <Icon name="star" size={26} color={tintColor}/>,
-
-            headerRight:(<Button title='Add' color={colors.darkgray} onPress={function(){
-                 navigation.navigate('newChart')
-                }} />),
+            tabBarIcon: <Icon name='ios-star' size={26} color={colors.darkgray}/>,
+            headerRight:Platform.OS=='ios'?
+                        (<Button title='Add' color={colors.darkgray} onPress={function(){navigation.navigate('newChart')}} />):
+                        (<TouchableHighlight style={{width:30, height:35, paddingTop:7,}} onPress={function(){navigation.navigate('newChart')}} >
+                            <Icon name='ios-add-circle-outline' size={26} color={colors.darkgray}/>
+                        </TouchableHighlight>
+                        )
             }),
         },
     newChart:{
@@ -152,13 +233,37 @@ const stack=StackNavigator({
         },
     chartDetails:{
         screen:ChartDetails,
-        navigationOptions: ({ navigation }) => ({
-            title:'Chart details',
-            headerTintColor:colors.darkgray,
-            }),
+        navigationOptions: ({ navigation }) => {
+            var params=navigation.state.params
+            return {
+                title:params.title,
+                headerTintColor:colors.darkgray,
+                }
+            }
         },
-    },
+    },{
+        header:{
+            style:{
+                elevation:0, //es un bug de la versión que salga la sombra, en teoría lo arreglarán
+                shadowOpacity: 0,
+                backgroundColor:colors.white,
+            }
+        },
+    }
 )
+// StackNavigator.navigationOptions = {
+//     header: {
+//         style: {
+//             elevation: 0,
+//             backgroundColor: 'red',
+//         }
+//     },
+//     headerStyle:{
+//         elevation: 0,
+//         backgroundColor: 'red',
+//     }
+// }
+
 
 const styles = StyleSheet.create({
     icon: {
@@ -175,6 +280,23 @@ const styles = StyleSheet.create({
             lvtitle:{flex:1, color:colors.blackgray, fontSize:14, marginTop:10,},
             lvsubtitle:{flex:1, color:colors.lightgray, fontSize:12, },
         lvbadge:{width:40, height:60, paddingTop:15,},
+    legendcontainer:{
+        position:'absolute', bottom:0, left:0, right:0, height:60,
+        flex:1, flexDirection:'row',
+        backgroundColor:colors.darkgray,
+        padding:20,
+        },
+    legend_label:{
+        color:colors.white,
+        fontSize:14,
+        width:'80%',
+        },
+    legend_value:{
+        color:colors.white,
+        fontSize:14,
+        width:'20%',
+        textAlign:'right',
+        }
 
     })
 
