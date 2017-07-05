@@ -111,6 +111,13 @@ class NewChart extends React.Component{
         }
     }
 class ChartDetails extends React.Component{
+    constructor(props){
+        super(props)
+        this.state={
+            label:'',
+            value:''
+            }
+        }
     getChart(chart){
         if (chart.type=='bar')
             return this.getChart_bar(chart)
@@ -143,9 +150,12 @@ class ChartDetails extends React.Component{
             )
         return (
             <View style={{marginLeft:20,}}>
-                <Pie data={data} options={options} accessorKey="value" onPress={function(item){console.log(item)}}  />
+                <Pie data={data} options={options} accessorKey="value" onPress={(item) => {this.setActiveSerie(item)}}  />
             </View>)
         }
+    setActiveSerie(item){
+        this.setState({label:item.label, value:item.value})
+    }
     getChart_bar(chart){
         let data=[chart.series]
         let options = Object.assign({
@@ -160,7 +170,7 @@ class ChartDetails extends React.Component{
                 }
             }, this.getChart_options()
             )
-        return (<Bar data={data} options={options} accessorKey='value' onPress={function(item){console.log(item)}}/>)
+        return (<Bar data={data} options={options} accessorKey='value' onPress={(item) => {this.setActiveSerie(item)}}/>)
         }
     render() {
         // return (<Text style={styles.tabContent}> ChartDetails {this.props.navigation.state.params.title} </Text>)
@@ -172,8 +182,8 @@ class ChartDetails extends React.Component{
                 {chart}
 
                 <View style={styles.legendcontainer}>
-                    <Text style={styles.legend_label}>Etiqueta</Text>
-                    <Text style={styles.legend_value}>Valor</Text>
+                    <Text style={styles.legend_label}> {this.state.label} </Text>
+                    <Text style={styles.legend_value}> {this.state.value} </Text>
                 </View>
             </View>)
         }

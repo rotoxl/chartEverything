@@ -21,3 +21,27 @@ npm install --save react-navigation
 * Find best way to create charts... RN charting libraries seem to only scratch the surface
   * ~~https://github.com/AdonRain/react-native-ichart~~ - OUTDATED
   * https://github.com/capitalone/react-native-pathjs-charts - GIVING A TRY 
+
+  
+# Add touch events to https://github.com/capitalone/react-native-pathjs-charts
+```javascript
+//Pie.js
+render() {
+    let fnOnPress=this.props.onPress 
+    ...
+    ...
+                      <Path d={c.sector.path.print() } stroke={stroke} fill={fill} fillOpacity={1} onPress={() => fnOnPress(c.item)}/>
+	...
+    
+```    
+
+```javascript
+//Bar.js
+render() {
+    let fnOnPress=this.props.onPress 
+    ...
+    ...
+                    <Path  d={ c.line.path.print() } stroke={stroke} fill={color} onPress={() => fnOnPress(c.item)}/>
+	...
+    
+```    
