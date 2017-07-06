@@ -58,8 +58,7 @@ var store={
             {label:'Elasticsearch',         value:115.98},
             {label:'SQLite',                value:113.86},
             ]
-        }
-    ]
+    }]
 }
 
 
@@ -239,32 +238,31 @@ const tabs=TabNavigator({
          navigationOptions: {
              tabBarLabel: getTranslation('myCharts'),
              tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-contact":"ios-contact-outline"} size={26} color={tintColor}/>)
-             }
-         },
+         }
+     },
      starredCharts: {
          screen: StarredCharts,
          navigationOptions: {
              tabBarLabel: getTranslation('starred'),
              tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-star":"ios-star-outline"} size={26} color={tintColor}/>)
-             }
-         },
+         }
+     },
      popularCharts: {
          screen: StarredCharts,
          navigationOptions: {
              tabBarLabel: getTranslation('popular'),
              tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-chatbubbles":"ios-chatbubbles-outline"} size={26} color={tintColor}/>)
-             }
-         },
-     }, {
+         }
+    },
+ }, {
      tabBarOptions: {
          activeTintColor: colors.darkgray, inactiveTintColor:colors.lightgray,
          style:{backgroundColor:'white', },
          indicatorStyle:{backgroundColor:colors.darkgray},
          swipeEnabled:true,
-         },
-     })
-const stack=StackNavigator(
-    {
+     },
+ })
+const stack=StackNavigator({
     tabs:{
         screen:tabs,
         navigationOptions: ({navigation}) => ({
@@ -307,18 +305,17 @@ const stack=StackNavigator(
             title:getTranslation('chartInfo'),
             headerTintColor:colors.darkgray,
             }),
-        }
-    },{
-        header:{
-            style:{
-                elevation:0, //es un bug de la versión que salga la sombra, en teoría lo arreglarán
-                shadowOpacity: 0,
-                backgroundColor:colors.white,
-            }
+    }
+},{
+    headerMode: 'screen',
+    navigationOptions:{
+        headerStyle:{
+            elevation:0, //next gen hack
+            shadowOpacity: 0,
+            backgroundColor:colors.white,
         },
     }
-)
-
+})
 
 const styles = StyleSheet.create({
     icon: {
@@ -354,6 +351,5 @@ const styles = StyleSheet.create({
         }
 
     })
-
 
 AppRegistry.registerComponent('chartEverything', () => stack)
