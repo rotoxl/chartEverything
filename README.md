@@ -7,10 +7,14 @@ Should be serverless (tabletop? firebase?) and should look like:
 ![Target](https://raw.githubusercontent.com/rotoxl/chartEverything/master/screenshots/Chart.png "Detail") 
 
 
-#Install
+# Install
 
 ```shell
 npm install --save react-navigation
+npm install react-native-vector-icons --save
+npm install react-native-pathjs-charts --save
+react-native link react-native-svg
+npm install
 ```
 
 # TODO
