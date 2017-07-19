@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import {StyleSheet, Text, View, Image, Button, Dimensions} from 'react-native'
+import {StyleSheet, Text, View, Image, Button, Dimensions, ActivityIndicator} from 'react-native'
 import {Bar, Pie} from 'react-native-pathjs-charts'
 import { FormattedWrapper, FormattedNumber, FormattedDate, FormattedRelativeTime, FormattedMessage } from 'react-native-globalize'
 
@@ -14,8 +14,14 @@ export default class ChartDetails extends React.Component{
         super(props)
         this.state={
             label:null,
-            value:null
+            value:null,
+            data:this.props.navigation.state.params,
+
+            series:null,
         }
+    }
+    componentDidMount(){
+        var self=this
     }
     getChart(chart){
         if (chart.type=='bar')
@@ -73,7 +79,14 @@ export default class ChartDetails extends React.Component{
         return (<Bar data={data} options={options} accessorKey='value' onPress={(item) => {this.setActiveSerie(item)}}/>)
     }
     render() {
-        var data=this.props.navigation.state.params
+        if (this.state.serires==null){
+            return (
+                <View style={{backgroundColor:colors.white, flex:1,}}>
+                    <ActivityIndicator animating={true} style={styles.throbber} size="large"/>
+                </View>
+            )
+        }
+
         var chart=this.getChart(data)
         return (
             <FormattedWrapper locale={store.i18n.locale} currency={store.i18n.currency} messages={store.i18n.messages}>

@@ -16,18 +16,12 @@ import ChartDetails from './chartDetails'
 import NewChart from './newChart'
 import {StarredCharts, MyCharts} from './chartListings'
 
-function getTranslation(k){
-    // return getTranslationByLang(store.i18n.locale, k)
-    // return getTranslationByLang('en', k)
-    return k
-}
-
 const tabs=TabNavigator({
      myCharts: {
          screen: MyCharts,
          navigationOptions: ({navigation, navigationOptions}) => {
              return {
-                 tabBarLabel: store.getTranslation('myCharts'),
+                 tabBarLabel: store.getTranslation('My Charts'),
                  tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-contact":"ios-contact-outline"} size={26} color={tintColor}/>)
              }
          }
@@ -36,7 +30,7 @@ const tabs=TabNavigator({
          screen: StarredCharts,
          navigationOptions: ({navigation, navigationOptions}) => {
              return {
-                 tabBarLabel: store.getTranslation('starred'),
+                 tabBarLabel: store.getTranslation('Starred'),
                  tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-star":"ios-star-outline"} size={26} color={tintColor}/>)
              }
          }
@@ -45,7 +39,7 @@ const tabs=TabNavigator({
          screen: StarredCharts,
          navigationOptions: ({navigation, navigationOptions}) => {
             return {
-                tabBarLabel: store.getTranslation('popular'),
+                tabBarLabel: store.getTranslation('Popular'),
                 tabBarIcon: ({ focused, tintColor }) => (<Icon name={focused?"ios-chatbubbles":"ios-chatbubbles-outline"} size={26} color={tintColor}/>)
             }
      }
@@ -69,7 +63,7 @@ const stack=StackNavigator({
                 title: 'Chart everything',
                 tabBarIcon: <Icon name='ios-star' size={26} color={colors.darkgray}/>,
                 headerRight:Platform.OS=='ios'?
-                            (<Button title={store.getTranslation('add')} color={colors.darkgray} onPress={function(){navigation.navigate('newChart')}} />):
+                            (<Button title={store.getTranslation('Add')} color={colors.darkgray} onPress={function(){navigation.navigate('newChart')}} />):
                             (<TouchableHighlight style={{width:30, height:35, paddingTop:7,}} onPress={function(){navigation.navigate('newChart')}} >
                                 <Icon name='ios-add-circle-outline' size={26} color={colors.darkgray}/>
                             </TouchableHighlight>
@@ -82,8 +76,21 @@ const stack=StackNavigator({
         navigationOptions: ({navigation, navigationOptions}) => {
             navigation.store=navigationOptions.store
             return {
-                title:getTranslation('newChart'),
+                title:store.getTranslation('New chart'),
                 headerTintColor:colors.darkgray,
+                headerRight:Platform.OS=='ios'?
+                            (<Button title={store.getTranslation('Save')} color={colors.darkgray} onPress={function(){
+                                    try{
+                                        store.saveNewChart()
+                                        navigation.pop()
+                                        }
+                                    catch (IncompleteData){
+                                        }
+                                }} />):
+                            (<TouchableHighlight style={{width:30, height:35, paddingTop:7,}} onPress={function(){navigation.navigate('chartInfo')}} >
+                                <Icon name='ios-information-circle-outline' size={26} color={colors.darkgray}/>
+                            </TouchableHighlight>
+                            )
             }
         }
         },
@@ -97,7 +104,7 @@ const stack=StackNavigator({
                 title:params.title,
                 headerTintColor:colors.darkgray,
                 headerRight:Platform.OS=='ios'?
-                            (<Button title={store.getTranslation('info')} color={colors.darkgray} onPress={function(){navigation.navigate('chartInfo')}} />):
+                            (<Button title={store.getTranslation('Info')} color={colors.darkgray} onPress={function(){navigation.navigate('chartInfo')}} />):
                             (<TouchableHighlight style={{width:30, height:35, paddingTop:7,}} onPress={function(){navigation.navigate('chartInfo')}} >
                                 <Icon name='ios-information-circle-outline' size={26} color={colors.darkgray}/>
                             </TouchableHighlight>
@@ -110,7 +117,7 @@ const stack=StackNavigator({
         navigationOptions: ({ navigation, navigationOptions }) => {
             navigation.store=navigationOptions.store
             return {
-                title:getTranslation('chartInfo'),
+                title:store.getTranslation('Chart info'),
                 headerTintColor:colors.darkgray,
             }
         }

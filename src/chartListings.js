@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import {StyleSheet, Text, View, Image, Button, FlatList, TouchableHighlight} from 'react-native'
+import {StyleSheet, Text, View, Image, Button, FlatList, TouchableHighlight, ActivityIndicator} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { FormattedWrapper, FormattedNumber, FormattedDate, FormattedRelativeTime, FormattedMessage } from 'react-native-globalize'
 
 import {colors, styles} from './styles'
-import {messages, getTranslationByLang} from './i18n'
 
 export class StarredCharts extends React.Component {
     render() {
@@ -18,6 +17,17 @@ export class StarredCharts extends React.Component {
 export class MyCharts extends React.Component {
     constructor(props){
         super(props)
+
+        this.state={
+            data:null,
+        }
+        this.store=props.navigation.store
+    }
+    componentDidMount(){
+        var self=this
+        this.store.data_getMyCharts(function(data){
+            self.setState({data:data})
+        })
     }
     renderSeparator = () => {
         return (
@@ -45,13 +55,22 @@ export class MyCharts extends React.Component {
         )
     }
     render() {
-        return (
-            <FormattedWrapper locale={store.i18n.locale} currency={store.i18n.currency} messages={messages}>
+        if (this.state.data==null){
+            return (
                 <View style={{backgroundColor:colors.white, flex:1,}}>
-                    <FlatList data={store.data} renderItem={({item}) => this.renderRow(item)} ItemSeparatorComponent={this.renderSeparator}/>
+                    <ActivityIndicator animating={true} style={styles.throbber} size="large"/>
                 </View>
-            </FormattedWrapper>
-        )
+            )
+        }
+        else {
+            return (
+                <FormattedWrapper locale={store.i18n.locale} currency={store.i18n.currency} messages={store.i18n.messages}>
+                    <View style={{backgroundColor:colors.white, flex:1,}}>
+                        <FlatList data={this.state.data} renderItem={({item}) => this.renderRow(item)} ItemSeparatorComponent={this.renderSeparator}/>
+                    </View>
+                </FormattedWrapper>
+            )
+        }
     }
     chart_onClick = (item) => {
         this.props.navigation.navigate('chartDetails', { ...item })
