@@ -9,6 +9,7 @@ import {colors, styles} from './styles'
 
 var {height, width} = Dimensions.get('window')
 
+import {Tabletop} from './tabletop'
 export default class ChartDetails extends React.Component{
     constructor(props){
         super(props)
@@ -22,6 +23,11 @@ export default class ChartDetails extends React.Component{
     }
     componentDidMount(){
         var self=this
+        Tabletop.init(this.state.data.url, true, function(data){
+            self.setState({series:data})
+            console.log(data)
+
+        })
     }
     getChart(chart){
         if (chart.type=='bar')
@@ -60,7 +66,7 @@ export default class ChartDetails extends React.Component{
         )
     }
     setActiveSerie(item){
-        this.setState({label:item.label, value:item.value})
+        this.setState({label:item.label, value:Number(item.value) })
     }
     getChart_bar(chart){
         let data=[chart.series]
@@ -79,7 +85,7 @@ export default class ChartDetails extends React.Component{
         return (<Bar data={data} options={options} accessorKey='value' onPress={(item) => {this.setActiveSerie(item)}}/>)
     }
     render() {
-        if (this.state.serires==null){
+        if (this.state.series==null){
             return (
                 <View style={{backgroundColor:colors.white, flex:1,}}>
                     <ActivityIndicator animating={true} style={styles.throbber} size="large"/>
@@ -87,7 +93,8 @@ export default class ChartDetails extends React.Component{
             )
         }
 
-        var chart=this.getChart(data)
+        this.state.data.series=this.state.series
+        var chart=this.getChart(this.state.data)
         return (
             <FormattedWrapper locale={store.i18n.locale} currency={store.i18n.currency} messages={store.i18n.messages}>
             <View style={{flex:1, top:0, bottom:0, left:0, right:0,}}>
