@@ -35,15 +35,17 @@ export default class NewChart extends React.Component{
     setDataAndState(dic){
         this.setState(dic)
 
-        var dic=Object.assign({}, this.state)
-        //limpiamos los retornos vacíos
-        if (dic.note!=null){
-            dic.note=dic.note.replace(/[\n\r]+/g, '')
-            if (dic.note.trim()=='')
-                dic.note=null
-            }
+        var estadoCompleto=Object.assign({}, this.state)
+        
+        // //limpiamos los retornos vacíos
+        // if (Object.keys(dic)[0]=='note' && dic.note!=null){
+        //     dic.note=dic.note.replace(/[\n\r]+/g, '')
+        //     if (dic.note.trim()=='')
+        //         dic.note=null
+        //     }
 
-        this.store.setData(dic)
+        this.store.setData(estadoCompleto)
+
     }
     render() {
         // <View style={styles.form_row} key="charttype">
@@ -106,7 +108,7 @@ export default class NewChart extends React.Component{
                         <Icon name='ios-mail-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
                         <TextInput
                             style={styles.form_row_text}
-                            onChangeText={(text) => this.setState({author:text})}
+                            onChangeText={(text) => this.setDataAndState({author:text})}
                             placeholder={'e-mail'} keyboardType='email-address'
                             value={this.state.author}
                             returnKeyType="next"
