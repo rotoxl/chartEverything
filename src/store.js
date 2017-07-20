@@ -21,7 +21,7 @@ const firebaseApp = firebase.initializeApp(firebaseConfig)
 
 export default store={
     user:'rotoxl@gmail.com',
-    keepoffline:true,
+    keepoffline:false,
 
 ///////
     i18n:{locale:'en', currency:'EUR', messages:messages},
@@ -40,7 +40,28 @@ export default store={
             })
 
     },
-    data_getStarredCharts:function(){
+    data_getStarredCharts:function(fnCallBack){
+        if (store.keepoffline){
+            fnCallBack( this.mock_sampledata() )
+            return
+            }
+
+        var u=store.user
+        firebaseApp.database().ref('stars')
+            .orderByChild('user')
+            .equalTo(u)
+            .on('value', function(snap){
+                var ret=[]
+                snap.forEach((child) => {
+                    var obj=child.val()
+                    // obj.key=child.key
+                    // obj.icon=obj.icon || store.iconForType[obj.type]
+                    ret.push(obj)
+                    })
+                alert( JSON.stringify(ret) )
+                fnCallBack(ret)
+
+            })
 
     },
     data_getMyCharts:function(fnCallBack){
@@ -50,8 +71,10 @@ export default store={
             }
 
         var u=store.user
-        firebaseApp.database().ref('charts').on('value',
-            function(snap){
+        firebaseApp.database().ref('charts')
+            .orderByChild('author')
+            .equalTo(u)
+            .on('value', function(snap){
                 var ret=[]
                 snap.forEach((child) => {
                     var obj=child.val()
@@ -84,7 +107,7 @@ export default store={
             type:type,
             icon:icon || store.iconForType[type],
             notes:notes,
-            timestamp:new Date(),
+            timestamp:''+new Date(),
             // tags:tags,
             // country_code:country_code,
             })
@@ -96,12 +119,12 @@ export default store={
     mock_sampledata:function(){
         return [{
             key:'x0xaw10',
-            title:'Programming languages (TIOBE index)',
+            title:'MOCK-Programming languages (TIOBE index)',
             author:'rotoxl@gmail.com',
             timestamp:'2017/07/04 20:54:00',
             type:'bar',
             icon:'ios-stats',//Ionicons
-            url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vSFCEQcorF0EWDLsA2WUCCgWqYFd-ZKCvXiuqrO_3xAvz3Bs1kzWVERmUftI90jq7LiPqyJFZ2qjRlG/pubhtml?gid=0&single=true',
+            url:'1rQAYjTZpkgNeup8OBF-zT6Ojn4f8b8qxQ-dzPyC37LA',
             // series:[
             //     {label:'Java',               value:14.49},
             //     {label:'C',                  value:6.84},
@@ -117,12 +140,12 @@ export default store={
             // ],
         },{
             key:'ca122010',
-            title:'Databases',
+            title:'MOCK-Databases',
             author:'ermolina@e-externas.aena.es',
             timestamp:'2017/07/05 22:28:00',
             type:'pie',
             icon:'ios-pie',//Ionicons
-            url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQvFRTYCPz1Jx9WLOlieHOuxcvFLwLmhSE6-j0fGqX5sSDzLIlIvRGj-zY1oPnrdkwL7afNXzQecJc2/pubhtml?gid=0&single=true'
+            url:'1UTa3XS4UlCwg9LHdIVgpcOyspVqrplP1ZKwzDBL9Q-A',
             // series:[
             //     {label:'Oracle',                value:1374.88},
             //     {label:'MySQL',                 value:1349.11},
