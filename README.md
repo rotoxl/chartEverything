@@ -18,9 +18,11 @@ npm install
 ```
 
 # TODO
-* Design 'New Chart' screen
-* Define chart metadata & chart types
-* Define inapp purchases
+* ~~Design 'New Chart' screen~~
+* Define 
+  * ~~chart metadata~~
+  * chart types
+  * inapp purchases
 * ~~Icons stuff~~
 * Find best way to create charts... RN charting libraries seem to only scratch the surface
   * ~~https://github.com/AdonRain/react-native-ichart~~ - OUTDATED
