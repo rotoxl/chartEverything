@@ -89,12 +89,12 @@ export const styles = StyleSheet.create({
     legend_label:{
         color:colors.white,
         fontSize:14,
-        width:'80%',
+        width:'70%',
     },
     legend_value:{
         color:colors.white,
         fontSize:14,
-        width:'20%',
+        width:'30%',
         textAlign:'right',
     }
 })
