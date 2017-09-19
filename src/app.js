@@ -76,7 +76,7 @@ const stack=StackNavigator({
         navigationOptions: ({navigation, navigationOptions}) => {
             navigation.store=navigationOptions.store
             return {
-                title:store.getTranslation('New chart'),
+                //title:store.getTranslation('New chart'),
                 headerTintColor:colors.darkgray,
                 headerRight:Platform.OS=='ios'?
                             (<Button title={store.getTranslation('Save')} color={colors.darkgray} onPress={function(){
@@ -93,7 +93,24 @@ const stack=StackNavigator({
                             )
             }
         }
-        },
+    },
+    editData:{
+        screen:editData,
+        navigationOptions: ({navigation, navigationOptions}) => {
+            navigation.store=navigationOptions.store
+            return {
+                headerTintColor:colors.darkgray,
+                headerRight:(<Button title={store.getTranslation('Save')} color={colors.darkgray} onPress={function(){
+                                    try{
+                                        store.saveChartData()
+                                        navigation.pop()
+                                        }
+                                    catch (IncompleteData){
+                                        }
+                                }} />)
+            }
+        }
+    },
     chartDetails:{
         screen:ChartDetails,
         navigationOptions: ({navigation, navigationOptions}) => {
@@ -111,7 +128,7 @@ const stack=StackNavigator({
                             )
                 }
             },
-        },
+    },
     chartInfo:{
         screen:ChartInfo,
         navigationOptions: ({ navigation, navigationOptions }) => {

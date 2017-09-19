@@ -3,7 +3,12 @@ import React, { Component } from 'react'
 import {StyleSheet, Text, View, TextInput, Picker, TouchableOpacity, Dimensions,
     KeyboardAvoidingView, ScrollView} from 'react-native'
 import {colors, styles} from './styles'
-import Icon from 'react-native-vector-icons/Ionicons'
+
+//import Icon from 'react-native-vector-icons/Ionicons'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import Ionicon from 'react-native-vector-icons/Ionicons'
+
+import TagInput from 'react-native-tag-input'
 
 export default class NewChart extends React.Component{
     constructor(props){
@@ -35,7 +40,7 @@ export default class NewChart extends React.Component{
     setDataAndState(dic){
         this.setState(dic)
 
-        var estadoCompleto=Object.assign({}, this.state)
+        var estadoCompleto=Object.assign({}, this.state, dic)
         
         // //limpiamos los retornos vacíos
         // if (Object.keys(dic)[0]=='note' && dic.note!=null){
@@ -49,7 +54,7 @@ export default class NewChart extends React.Component{
     }
     render() {
         // <View style={styles.form_row} key="charttype">
-        //     <Icon name={this.state.icon} size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+        //     <Ionicon name={this.state.icon} size={26} color={colors.darkgray} style={styles.form_row_icon}/>
         //     <Picker
         //         style={styles.form_row_text}
         //         selectedValue={this.state.type}
@@ -58,46 +63,92 @@ export default class NewChart extends React.Component{
         //             <Picker.Item label="Bar" value="bar" />
         //     </Picker>
         // </View>
+        console.disableYellowBox = true
         return (
-            <KeyboardAvoidingView style={[styles.form, {backgroundColor:'white', flex:1}]} behavior='padding'>
-            <ScrollView style={{backgroundColor:colors.white}} >
-                <TextInput key="title"
-                    style={styles.form_title}
-                    onChangeText={(text) => this.setDataAndState({title:text})}
-                    placeholder={'My awesome chart'}
-                    returnKeyType="next"
-                    value={this.state.title} autoFocus={true}/>
+            <KeyboardAvoidingView style={[styles.form, {backgroundColor:'white', flex:1}]} >
+            
+            <TextInput key="title"
+                underlineColorAndroid='rgba(0,0,0,0)'
+                style={styles.form_title}
+                onChangeText={(text) => this.setDataAndState({title:text})}
+                placeholder={'My awesome chart'}
+                returnKeyType="next"
+                value={this.state.title} autoFocus={true}/>
 
-                <View style={[styles.form_line, {marginLeft:-10, width:'105%'}]}/>
-                    <View style={styles.form_row} key="data-url">
-                        <Icon name='ios-link-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
-                        <TextInput
+               
+
+            <ScrollView style={{backgroundColor:colors.white}} >
+                <View style={styles.form_row} key="data">
+                    <Ionicon name='ios-cube' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                    <Text style={styles.form_row_button}>
+                        {'Tap to edit data'}
+                    </Text>
+                    <Ionicon name='ios-arrow-forward-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                    </View>
+
+                <View style={styles.form_line}/>
+                    <View style={styles.form_row} key="chart-type">
+                        <Ionicon name='ios-pie' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <Picker
                             style={styles.form_row_text}
-                            onChangeText={(text) => this.setDataAndState({dataURL:text})}
-                            placeholder={'Data URL'}
-                            value={this.state.dataURL}
-                            keyboardType="web-search"
-                            returnKeyType="next"
-                            autoCapitalize="none"
-                            />
-                        <Icon name='ios-information-circle' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                            selectedValue={this.state.type}
+                            onValueChange={(itemValue, itemIndex) => this.setChartType(itemValue)}>
+                            <Picker.Item label="Pie" value="pie" />
+                            <Picker.Item label="Bar" value="bar" />
+                        </Picker>
                     </View>
 
                 <View style={styles.form_line}/>
                     <View style={styles.form_multilinerow} key="note">
-                        <Icon name='ios-create-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <Ionicon name='ios-list-box' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
                         <TextInput
-                            style={styles.form_row_multilinetext}
-                            multiline={true} numberOfLines={4}
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            style={[styles.form_row_multilinetext, {backgroundColor:'#ffffff'}]}
+                            multiline={true} numberOfLines={2} 
                             onChangeText={(text) => this.setDataAndState({note:text})}
                             placeholder={'Add note'}
                             returnKeyType="next"
+                            labelExtractor = {(tag) => tag}
                             value={this.state.note}/>
                     </View>
 
                 <View style={styles.form_line}/>
+                    <View style={styles.form_row} key="tags">
+                        <Ionicon name='ios-bookmark' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <TagInput
+                            value={this.state.tags}
+                            
+                            _tagTextStyle={{backgroundColor:'red'}}
+                            textInputContainer={{flex:1, backgroundColor:'green'}}
+                            textInput={{flex:1, backgroundColor:'blue'}}
+                            placeholder={'Tags'}
+                            returnKeyType="next"
+                            autoCapitalize="none"
+                            numberOfLines={2}
+                            inputProps={{keyboardType:'default', placeholder: 'email'}}
+                            onChange={(text) => this.setDataAndState({tags:text})} />
+                    </View>
+
+                <View style={styles.form_line}/>
+                    <View style={styles.form_row} key="color">
+                        <Ionicon name='ios-color-palette' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <Picker
+                            style={styles.form_row_text}
+                            selectedValue={this.state.color}
+                            onValueChange={(itemValue, itemIndex) => this.setDataAndState({color:itemValue})}>
+                            <Picker.Item label="Gray (only option for free accounts)" value="gray" />
+                            <Picker.Item label="Red" value="red" />
+                            <Picker.Item label="Orange" value="orange" />
+                            <Picker.Item label="Yellow" value="yellow" />
+                            <Picker.Item label="Green" value="green" />
+                            <Picker.Item label="Blue" value="blue" />
+                            <Picker.Item label="Purple" value="purple" />
+                        </Picker>
+                    </View>
+
+                <View style={styles.form_line}/>
                     <View style={styles.form_row} key="location">
-                        <Icon name='ios-pin-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <Ionicon name='ios-pin' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
                         <TouchableOpacity>
                             <Text style={styles.form_row_button}>{'Add location'}</Text>
                         </TouchableOpacity>
@@ -105,8 +156,9 @@ export default class NewChart extends React.Component{
 
                 <View style={styles.form_line}/>
                     <View style={styles.form_row} key="author">
-                        <Icon name='ios-mail-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <Ionicon name='ios-mail' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
                         <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
                             style={styles.form_row_text}
                             onChangeText={(text) => this.setDataAndState({author:text})}
                             placeholder={'e-mail'} keyboardType='email-address'
@@ -117,9 +169,9 @@ export default class NewChart extends React.Component{
                     </View>
                 <View style={styles.form_line}/>
                     <View style={styles.form_row} key="privacy">
-                        <Icon name='ios-unlock-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <Ionicon name='ios-unlock' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
                         <Text style={styles.form_row_button}>
-                            {'Public (default for Free accounts)'}
+                            {'Public (default for free accounts)'}
                         </Text>
                     </View>
                 <View style={{ height: 100,  }} />

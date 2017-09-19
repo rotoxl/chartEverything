@@ -5,6 +5,13 @@ export const colors={
     darkgray:'#4A4A4A',
     lightgray:'#9B9B9B',
     white:'white',
+
+    red:'#ff6347',
+    orange:'#eb993d',
+    yellow:'#e6c045',
+    green:'#62bc46',
+    blue:'#40ade4',
+    purple:'#c17fd2',
 }
 
 export const styles = StyleSheet.create({
@@ -34,6 +41,7 @@ export const styles = StyleSheet.create({
         height:40,
         marginBottom:20,
         paddingLeft:10,
+        fontSize:18,
     },
     form_row:{
         flexDirection:'row',
@@ -42,7 +50,8 @@ export const styles = StyleSheet.create({
     },
     form_multilinerow:{
         flexDirection:'row',
-        height:80,
+        height:60,
+        
         // backgroundColor:'yellow'
     },
     form_line:{
@@ -50,28 +59,32 @@ export const styles = StyleSheet.create({
         width: "88%",
         backgroundColor: "#CED0CE",
         marginLeft: "11%",
-        marginBottom:10,
+        marginTop:15,
+        marginBottom:10, 
     },
     form_row_icon:{
         alignSelf:'flex-start',
-        width:40, height:40,
+        width:40, height:50,
         paddingLeft:5,
-        paddingTop:0,
+        paddingTop:10,
         // backgroundColor:'red'
     },
     form_row_button:{
         fontSize:16,
-        paddingTop:4,
+        paddingTop:12,
         color: "#CED0CE",
+        flex:1, 
     },
     form_row_text:{
         fontSize:16,
-        flex:1, height:30,
-        // backgroundColor:'green'
+        flex:1, height:50,
+        // backgroundColor:'green',
+        
     },
     form_row_multilinetext:{
         fontSize:16,
-        flex:1, height:80,
+        flex:1, height:60,
+        textAlignVertical: 'top',
 
     },
     lvrow:{left:0, right:0, flexDirection: 'row'},
