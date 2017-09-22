@@ -8,11 +8,12 @@ import {colors, styles} from './styles'
 class ListingRow extends React.Component {
     constructor(props){
         super(props)
+        this.onPress=props.onPress
     }
     render(){
         var item=this.props.item
         return (
-            <TouchableHighlight activeOpacity={.9} underlayColor="#e9e9ef" onPress={() => {this.chart_onClick(item)}}>
+            <TouchableHighlight activeOpacity={.9} underlayColor="#e9e9ef" onPress={() => {this.onPress(item)}}>
                 <View style={styles.lvrow} key={item.key}>
                     <View style={styles.lvicon}>
                         <Icon name={item.icon} size={26} color={colors.darkgray} style={{alignSelf:'center', }}/>
@@ -61,7 +62,7 @@ export class MyCharts extends React.Component {
     }
     renderRow(item){
         return (
-            <ListingRow item={item}/>
+            <ListingRow item={item} onPress={this.chart_onClick}/>
         )
     }
     render() {
@@ -110,7 +111,7 @@ export class StarredCharts extends React.Component {
     }
     renderRow(item){
         return (
-            <ListingRow item={item}/>
+            <ListingRow item={item} onPress={this.chart_onClick}/>
         )
     }
     render() {
