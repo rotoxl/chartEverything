@@ -9,19 +9,12 @@ const firebaseConfig = {
     projectId: "charteverything",
     storageBucket: "charteverything.appspot.com",
     messagingSenderId: "773413978533"
-
-    // apiKey: "AIzaSyBXiE5k-K4JQfd0GoxlYSd9x1FK6tOodDg",
-    // authDomain: "test-c00e3.firebaseapp.com",
-    // databaseURL: "https://test-c00e3.firebaseio.com",
-    // projectId: "test-c00e3",
-    // storageBucket: "test-c00e3.appspot.com",
-    // messagingSenderId: "1089532985221",
 }
 const firebaseApp = firebase.initializeApp(firebaseConfig)
 
 export default store={
     user:'rotoxl@gmail.com',
-    keepoffline:false,
+    keepoffline:true,
 
 ///////
     i18n:{locale:'en', currency:'EUR', messages:messages},
@@ -90,16 +83,23 @@ export default store={
     },
     setData:function(data){
         this.data=data
-        this.data.dirty=true
+        this.dirty=true
+    },
+    setChartData:function(data){
+        this.chartdata=data
+        this.dirty=true
     },
     saveNewChart:function(){
         var d=this.data
 
-        if (d==null || d.title==null || d.dataURL==null || d.type==null)
+        if (d==null || d.title==null || d.type==null)
             throw 'ErrIncompleteData'
-        this.data_newChart(d.author, d.title, d.note, d.tags, d.location, d.dataURL, d.type, d.icon)
+        else if (this.chartdata==null || this.chartdata.lenght==0)
+            throw 'ErrIncompleteData'
+        
+        this.data_newChart(d.author, d.title, d.note, d.tags, d.location, d.dataURL, d.type, d.icon, this.chartdata)
     },
-    data_newChart:function(username, title, notes, tags, country_code, url, type, icon){
+    data_newChart:function(username, title, notes, tags, country_code, url, type, icon, data){
         firebaseApp.database().ref('charts').push({
             author:username,
             title:title,
@@ -110,6 +110,7 @@ export default store={
             timestamp:''+new Date(),
             // tags:tags,
             // country_code:country_code,
+            data:data
             })
     },
     data_getChartData:function(){
@@ -159,6 +160,18 @@ export default store={
             //     {label:'Elasticsearch',         value:115.98},
             //     {label:'SQLite',                value:113.86},
             // ]
+        },{
+            key:'-KucAJnusbQTrKcNSIEM',
+            title:'MOCK-My awesome chart',
+            author:'rotoxl@gmail.com',
+            timestamp:'Fri Sep 22 2017 08:01:36 GMT+0200 (CEST)',
+            type:'pie',
+            icon:'ios-pie',//Ionicons
+            url:'1UTa3XS4UlCwg9LHdIVgpcOyspVqrplP1ZKwzDBL9Q-A',
+            dta:[
+                {label:'Beer', value:18},
+                {label:'Rum', value:50},
+            ]
         }]
     }
 }

@@ -5,7 +5,6 @@ import { FormattedWrapper, FormattedNumber, FormattedDate, FormattedRelativeTime
 
 import {colors, styles} from './styles'
 
-
 class ListingRow extends React.Component {
     constructor(props){
         super(props)
@@ -39,7 +38,6 @@ class ListSep extends React.Component{
         )
     }
 }
-
 
 export class MyCharts extends React.Component {
     constructor(props){

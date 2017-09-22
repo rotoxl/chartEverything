@@ -15,6 +15,8 @@ export const messages = {
 
         'New chart':'Nueva gráfica',
         'Chart info':'Información sobre la gráfica',
+
+        'SAVE':'GUARDAR',
     },
 }
 export function getTranslationByLang(lang, k){

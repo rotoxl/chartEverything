@@ -14,6 +14,7 @@ import {messages, getTranslationByLang} from './i18n'
 import ChartInfo from './chartInfo'
 import ChartDetails from './chartDetails'
 import NewChart from './newChart'
+import editData from './editData'
 import {StarredCharts, MyCharts} from './chartListings'
 
 const tabs=TabNavigator({
@@ -78,19 +79,17 @@ const stack=StackNavigator({
             return {
                 //title:store.getTranslation('New chart'),
                 headerTintColor:colors.darkgray,
-                headerRight:Platform.OS=='ios'?
-                            (<Button title={store.getTranslation('Save')} color={colors.darkgray} onPress={function(){
+                headerRight:(<TouchableHighlight style={{width:40, height:35, paddingTop:7, marginRight:8, fontSize:16}} onPress={function(){
                                     try{
                                         store.saveNewChart()
                                         navigation.pop()
                                         }
                                     catch (IncompleteData){
                                         }
-                                }} />):
-                            (<TouchableHighlight style={{width:30, height:35, paddingTop:7,}} onPress={function(){navigation.navigate('chartInfo')}} >
-                                <Icon name='ios-information-circle-outline' size={26} color={colors.darkgray}/>
+                            }}>
+                                <Text>{store.getTranslation('SAVE')}</Text>
                             </TouchableHighlight>
-                            )
+                        )
             }
         }
     },
@@ -100,14 +99,17 @@ const stack=StackNavigator({
             navigation.store=navigationOptions.store
             return {
                 headerTintColor:colors.darkgray,
-                headerRight:(<Button title={store.getTranslation('Save')} color={colors.darkgray} onPress={function(){
-                                    try{
-                                        store.saveChartData()
-                                        navigation.pop()
-                                        }
-                                    catch (IncompleteData){
-                                        }
-                                }} />)
+                // headerRight:(   <TouchableHighlight style={{width:40, height:35, paddingTop:7, marginRight:8, fontSize:16}} onPress={function(){
+                //                     try{
+                //                         store.setChartData()
+                //                         navigation.pop()
+                //                         }
+                //                     catch (IncompleteData){
+                //                         }
+                //                 }} >
+                //                     <Text>{store.getTranslation('SAVE')}</Text>
+                //                 </TouchableHighlight>
+                //                )
             }
         }
     },

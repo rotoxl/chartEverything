@@ -25,6 +25,7 @@ export default class NewChart extends React.Component{
             location:null,
             author:this.store.user,
             public:true,
+            data:[],
         }
 
         /*
@@ -39,7 +40,6 @@ export default class NewChart extends React.Component{
     }
     setDataAndState(dic){
         this.setState(dic)
-
         var estadoCompleto=Object.assign({}, this.state, dic)
         
         // //limpiamos los retornos vacíos
@@ -50,19 +50,8 @@ export default class NewChart extends React.Component{
         //     }
 
         this.store.setData(estadoCompleto)
-
     }
     render() {
-        // <View style={styles.form_row} key="charttype">
-        //     <Ionicon name={this.state.icon} size={26} color={colors.darkgray} style={styles.form_row_icon}/>
-        //     <Picker
-        //         style={styles.form_row_text}
-        //         selectedValue={this.state.type}
-        //         onValueChange={(itemValue, itemIndex) => this.setChartType(itemValue)}>
-        //             <Picker.Item label="Pie" value="pie" />
-        //             <Picker.Item label="Bar" value="bar" />
-        //     </Picker>
-        // </View>
         console.disableYellowBox = true
         return (
             <KeyboardAvoidingView style={[styles.form, {backgroundColor:'white', flex:1}]} >
@@ -73,19 +62,19 @@ export default class NewChart extends React.Component{
                 onChangeText={(text) => this.setDataAndState({title:text})}
                 placeholder={'My awesome chart'}
                 returnKeyType="next"
-                value={this.state.title} autoFocus={true}/>
-
-               
+                value={this.state.title}/>
 
             <ScrollView style={{backgroundColor:colors.white}} >
-                <View style={styles.form_row} key="data">
-                    <Ionicon name='ios-cube' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
-                    <Text style={styles.form_row_button}>
-                        {'Tap to edit data'}
-                    </Text>
-                    <Ionicon name='ios-arrow-forward-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('editData', {data:this.state.data})} >    
+                    <View style={styles.form_row} key="data">
+                        <Ionicon name='ios-cube' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
+                        <Text style={styles.form_row_button}>
+                            {'Tap to edit data'}
+                        </Text>
+                        <Ionicon name='ios-arrow-forward-outline' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
                     </View>
-
+                </TouchableOpacity>    
+                    
                 <View style={styles.form_line}/>
                     <View style={styles.form_row} key="chart-type">
                         <Ionicon name='ios-pie' size={26} color={colors.darkgray} style={styles.form_row_icon}/>
@@ -125,7 +114,7 @@ export default class NewChart extends React.Component{
                             returnKeyType="next"
                             autoCapitalize="none"
                             numberOfLines={2}
-                            inputProps={{keyboardType:'default', placeholder: 'email'}}
+                            inputProps={{keyboardType:'default', placeholder:'Tags'}}
                             onChange={(text) => this.setDataAndState({tags:text})} />
                     </View>
 

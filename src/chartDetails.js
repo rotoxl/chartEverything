@@ -8,8 +8,8 @@ import store from './store'
 import {colors, styles} from './styles'
 
 var {height, width} = Dimensions.get('window')
-
 import {Tabletop} from './tabletop'
+
 export default class ChartDetails extends React.Component{
     constructor(props){
         super(props)
@@ -26,8 +26,8 @@ export default class ChartDetails extends React.Component{
         Tabletop.init(this.state.data.url, true, function(data){
             self.setState({series:data})
             console.log(data)
-
         })
+
     }
     getChart(chart){
         if (chart.type=='bar')
